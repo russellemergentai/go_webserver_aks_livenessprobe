@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+spec:
+  selector:
+    matchLabels:
+      app: liveness
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: liveness
+    spec:
+      containers:
+      - name: liveness
+        image: russellemergentai/liveness_1
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /status
+            port: 8080
+          initialDelaySeconds: 35
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+  selector:
+    app: liveness
